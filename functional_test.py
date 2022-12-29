@@ -12,7 +12,7 @@ class NewVisitorTest(unittest.TestCase):
 
     def test_start_and_save_list(self):
         #User goes to home page
-        self.browser.get('http://localhost:8000')
+        self.browser.get('http://localhost:8000/lists/')
 
         #page title mentions 'To Do' list
         self.assertIn('To-Do', self.browser.title)
