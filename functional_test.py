@@ -1,5 +1,6 @@
 from selenium import webdriver
 from selenium.webdriver.common.by import By
+from selenium.webdriver.common.keys import Keys
 import unittest
 
 class NewVisitorTest(unittest.TestCase):
@@ -34,7 +35,10 @@ class NewVisitorTest(unittest.TestCase):
 
         table = self.browser.find_element(By.ID, 'id_list_table')
         rows = table.find_elements(By.TAG_NAME, 'tr')
-        self.assertTrue(any(row.text == '1: Buy Bread' for row in rows))
+        self.assertTrue(
+            any(row.text == '1: Buy Bread' for row in rows),
+            'New to-do item did not appear in table'
+        )
 
         #There is still text box entry for more items
         self.fail('Finish Test')
