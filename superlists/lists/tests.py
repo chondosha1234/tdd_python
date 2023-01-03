@@ -6,6 +6,7 @@ from django.template.loader import render_to_string
 import re
 
 from lists.views import home_page
+from lists.models import Item
 
 
 # Create your tests here.
@@ -17,7 +18,7 @@ class HomePageTest(TestCase):
     """
     This function strips the auto generated csrf token from rendered html pages
     in order to compare the html page strings. This was needed in order to follow along
-    with the text book examples. 
+    with the text book examples.
     """
     @staticmethod
     def remove_csrf(html_code):
@@ -45,3 +46,23 @@ class HomePageTest(TestCase):
         self.assertIn('A new list item', response.content.decode())
         expected_html = render_to_string('home.html', {'new_item_text': 'A new list item'})
         self.assertEqual(self.remove_csrf(response.content.decode()), self.remove_csrf(expected_html))
+
+
+class ItemModelTest(TestCase):
+
+    def test_save_and_retrieve_item(self):
+        first_item = Item()
+        first_item.text = "The first item"
+        first_item.save()
+
+        second_item = Item()
+        second_item.text = "The second item"
+        second_item.save()
+
+        saved_items = Item.objects.all()
+        self.assertEqual(saved_items.count(), 2)
+
+        first_saved = saved_items[0]
+        second_saved = saved_items[1]
+        self.assertEqual(first_saved.text, "The first item")
+        self.assertEqual(second_saved.text, "The second item")
