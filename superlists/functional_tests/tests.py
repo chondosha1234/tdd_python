@@ -1,9 +1,11 @@
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
+from django.test import LiveServerTestCase
+from django.urls import reverse
 import unittest
 
-class NewVisitorTest(unittest.TestCase):
+class NewVisitorTest(LiveServerTestCase):
 
     def setUp(self):
         self.browser = webdriver.Firefox()
@@ -19,7 +21,8 @@ class NewVisitorTest(unittest.TestCase):
 
     def test_start_and_save_list(self):
         #User goes to home page
-        self.browser.get('http://localhost:8000/lists/')
+        print(self.live_server_url)
+        self.browser.get(self.live_server_url + reverse('home'))
 
         #page title mentions 'To Do' list
         self.assertIn('To-Do', self.browser.title)
@@ -60,6 +63,3 @@ class NewVisitorTest(unittest.TestCase):
         # user visits the url and checks the list
 
         browser.quit()
-
-if __name__ == '__main__':
-    unittest.main(warnings='ignore')
