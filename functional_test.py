@@ -38,6 +38,13 @@ class NewVisitorTest(unittest.TestCase):
         #"1: Buy Bread" as item on list
         inputbox.send_keys(Keys.ENTER)
 
+        #user enters "buy milk"
+        #page updates again and now has 2 entries
+        self.browser.refresh()
+        inputbox = self.browser.find_element(By.ID, 'id_new_item')
+        inputbox.send_keys('Buy Milk')
+        inputbox.send_keys(Keys.ENTER)
+
         self.browser.refresh() # added to deal with stale elements
         self.check_for_row_in_table("1: Buy Bread")
         self.check_for_row_in_table("2: Buy Milk")
