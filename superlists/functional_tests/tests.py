@@ -40,22 +40,51 @@ class NewVisitorTest(LiveServerTestCase):
         #when user presses enter the page updates and has list
         #"1: Buy Bread" as item on list
         inputbox.send_keys(Keys.ENTER)
+        #page creates url after first item entered
+        user_list_url = self.browser.current_url
+        self.assertRegex(user_list_url, '/lists/.+')
+        self.check_for_row_in_table("1: Buy Bread")
 
         #user enters "buy milk"
-        #page updates again and now has 2 entries
         self.browser.refresh()
         inputbox = self.browser.find_element(By.ID, 'id_new_item')
         inputbox.send_keys('Buy Milk')
         inputbox.send_keys(Keys.ENTER)
 
+        #page updates again and now has 2 entries
         self.browser.refresh() # added to deal with stale elements
         self.check_for_row_in_table("1: Buy Bread")
         self.check_for_row_in_table("2: Buy Milk")
 
-        #There is still text box entry for more items
+        #New user2 visits site
+        #use new browser session to make sure no cookies from user1
+        self.browser.quit()
+        self.browser = webdriver.Firefox()
+
+        #user2 visists home page
+        # user1 list is not there
+        self.browser.get(self.live_server_url + reverse('home'))
+        page_text = self.browser.find_element(By.TAG_NAME, 'body').text
+        self.assertNotIn('Buy Bread', page_text)
+        self.assertNotIn('Buy Milk', page_text)
+
+        # user2 starts new list by entering item
+        inputbox = self.browser.find_element(By.ID, 'id_new_item')
+        inputbox.send_keys('Buy Borshch')
+        inputbox.send_keys(Keys.ENTER)
+
+        #user2 gets their own url
+        user2_list_url = self.browser.current_url
+        self.assertRegex(user2_list_url, '/lists/.+')
+        self.assertNotEqual(user_list_url, user2_list_url)
+
+        #again check to make sure user1 list not on page
+        page_text = self.browser.find_element(By.TAG_NAME, 'body').text
+        self.assertNotIn('Buy Bread', page_text)
+        self.assertIn('Buy Borshch', page_text)
+
+
         self.fail('Finish Test')
-        #user enters "buy milk"
-        #page updates again and now has 2 entries
 
         #page should retain list information
         #page generates unique url for user with explanatory text
