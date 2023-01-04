@@ -5,12 +5,16 @@
   </head>
 
   <body>
-    <h1>Start a New To-Do lists</h1>
+    <h1>To-Do lists</h1>
     <form method="POST">
       {% csrf_token %}
       <input name="item_text" id="id_new_item" placeholder="Enter a to-do item"/>
     </form>
-
+    <table id="id_list_table">
+      {% for item in items %}
+        <tr><td>{{forloop.counter}}: {{ item.text }} </td></tr>
+      {% endfor %}
+    </table>
   </body>
 
 </html>
