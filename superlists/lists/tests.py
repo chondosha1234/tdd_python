@@ -37,31 +37,6 @@ class HomePageTest(TestCase):
         #response = home_page(request)
         #self.assertEqual(template, 'home.html')
 
-    def test_home_page_save_post(self):
-        request = HttpRequest()
-        request.method = 'POST'
-        request.POST['item_text'] = 'A new list item'
-
-        response = home_page(request)
-
-        self.assertEqual(Item.objects.count(), 1)
-        new_item = Item.objects.first()
-        self.assertEqual(new_item.text, 'A new list item')
-
-    def test_redirect_after_post(self):
-        request = HttpRequest()
-        request.method = 'POST'
-        request.POST['item_text'] = 'A new list item'
-
-        response = home_page(request)
-
-        self.assertEqual(response.status_code, 302)
-        self.assertEqual(response['location'], '/lists/only_url')
-
-    def test_home_page_saves_when_necessary(self):
-        request = HttpRequest()
-        home_page(request)
-        self.assertEqual(Item.objects.count(), 0)
 
 class ListViewTest(TestCase):
 
@@ -77,6 +52,23 @@ class ListViewTest(TestCase):
 
         self.assertContains(response, 'item 1')
         self.assertContains(response, 'item 2')
+
+class NewListTest(TestCase):
+
+    def test_save_post_request(self):
+        self.client.post('/lists/new', data={'item_text': 'A new list item'})
+
+        self.assertEqual(Item.objects.count(), 1)
+        new_item = Item.objects.first()
+        self.assertEqual(new_item.text, 'A new list item')
+
+    def test_redirect_after_post(self):
+        response = self.client.post('/lists/new', data={'item_text': 'A new list item'})
+
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(response['location'], '/lists/only_url')
+        self.assertRedirects(response, '/lists/only_url')
+
 
 class ItemModelTest(TestCase):
 
