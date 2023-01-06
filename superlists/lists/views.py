@@ -12,11 +12,13 @@ def view_list(request, list_id):
     context = {
         'list': list_
     }
+    print('inside view_list func')
     return render(request, "list.html", context)
 
 def new_list(request):
     list_ = List.objects.create()
     Item.objects.create(text=request.POST['item_text'], list=list_)
+    print('inside new_list func')
     return redirect('/lists/%d/' % (list_.id))
 
 def add_item(request, list_id):

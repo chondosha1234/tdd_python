@@ -4,17 +4,19 @@ from selenium.webdriver.common.keys import Keys
 from django.test import LiveServerTestCase
 from django.urls import reverse
 import unittest
+import time
 
 class NewVisitorTest(LiveServerTestCase):
 
     def setUp(self):
         self.browser = webdriver.Firefox()
-        self.browser.implicitly_wait(1)
+        self.browser.implicitly_wait(3)
 
     def tearDown(self):
         self.browser.quit()
 
     def check_for_row_in_table(self, row_text):
+        self.browser.refresh()
         table = self.browser.find_element(By.ID, 'id_list_table')
         rows = table.find_elements(By.TAG_NAME, 'tr')
         self.assertIn(row_text, [row.text for row in rows])
@@ -40,19 +42,20 @@ class NewVisitorTest(LiveServerTestCase):
         #"1: Buy Bread" as item on list
         inputbox.send_keys(Keys.ENTER)
         #page creates url after first item entered
+        time.sleep(2)
         user_list_url = self.browser.current_url
-        self.assertRegex(user_list_url, '/.+')
+        self.assertRegex(user_list_url, '/lists/.+')
 
         #user enters "buy milk"
-        self.browser.refresh()
+        #self.browser.refresh()
         inputbox = self.browser.find_element(By.ID, 'id_new_item')
         inputbox.send_keys('Buy Milk')
         inputbox.send_keys(Keys.ENTER)
 
         #page updates again and now has 2 entries
-        self.browser.refresh() # added to deal with stale elements
-        #self.check_for_row_in_table("1: Buy Bread")
-        #self.check_for_row_in_table("2: Buy Milk")
+        #self.browser.refresh() # added to deal with stale elements
+        self.check_for_row_in_table("1: Buy Bread")
+        self.check_for_row_in_table("2: Buy Milk")
 
         #New user2 visits site
         #use new browser session to make sure no cookies from user1
@@ -72,8 +75,9 @@ class NewVisitorTest(LiveServerTestCase):
         inputbox.send_keys(Keys.ENTER)
 
         #user2 gets their own url
+        time.sleep(2)
         user2_list_url = self.browser.current_url
-        self.assertRegex(user2_list_url, '/.+')
+        self.assertRegex(user2_list_url, '/lists/.+')
         self.assertNotEqual(user_list_url, user2_list_url)
 
         #again check to make sure user1 list not on page
@@ -81,12 +85,22 @@ class NewVisitorTest(LiveServerTestCase):
         self.assertNotIn('Buy Bread', page_text)
         self.assertIn('Buy Borshch', page_text)
 
-
-        self.fail('Finish Test')
-
         #page should retain list information
         #page generates unique url for user with explanatory text
 
         # user visits the url and checks the list
 
-        browser.quit()
+        self.browser.quit()
+
+    def test_layout_and_styling(self):
+        #user goes to home page
+        self.browser.get(self.live_server_url + reverse('home'))
+        self.browser.set_window_size(1024, 728)
+
+        #the input box is centered
+        inputbox = self.browser.find_element(By.ID, 'id_new_item')
+        self.assertAlmostEqual(
+            inputbox.location['x'] + inputbox.size['width'] / 2,
+            512,
+            delta=5
+        )
