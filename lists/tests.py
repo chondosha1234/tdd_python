@@ -26,11 +26,11 @@ class HomePageTest(TestCase):
         return re.sub(csrf_regex, '', html_code)
 
     def test_root_url_resolve_to_home_page(self):
-        found = resolve('/lists/')
+        found = resolve('/')
         self.assertEquals(found.func, home_page)
 
     def test_home_page_returns(self):
-        response = self.client.get('/lists/')
+        response = self.client.get('/')
         self.assertEquals(response.templates[0].name, 'home.html')
         self.assertTemplateUsed(response, 'home.html')
         #request = HttpRequest()

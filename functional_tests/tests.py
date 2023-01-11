@@ -1,12 +1,15 @@
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
+from selenium.common.exceptions import WebDriverException
 #from django.test import LiveServerTestCase
 from django.contrib.staticfiles.testing import StaticLiveServerTestCase
 from django.urls import reverse
 import unittest
 import time
 import os
+
+MAX_WAIT = 10
 
 class NewVisitorTest(StaticLiveServerTestCase):
 
@@ -20,11 +23,19 @@ class NewVisitorTest(StaticLiveServerTestCase):
     def tearDown(self):
         self.browser.quit()
 
-    def check_for_row_in_table(self, row_text):
-        self.browser.refresh()
-        table = self.browser.find_element(By.ID, 'id_list_table')
-        rows = table.find_elements(By.TAG_NAME, 'tr')
-        self.assertIn(row_text, [row.text for row in rows])
+    def wait_for_row_in_table(self, row_text):
+        #self.browser.refresh()
+        start_time = time.time()
+        while True:
+            try:
+                table = self.browser.find_element(By.ID, 'id_list_table')
+                rows = table.find_elements(By.TAG_NAME, 'tr')
+                self.assertIn(row_text, [row.text for row in rows])
+                return
+            except(AssertionError, WebDriverException) as e:
+                if time.time() - start_time > MAX_WAIT:
+                    raise e
+                time.sleep(0.5)
 
     def test_start_and_save_list(self):
         #User goes to home page
@@ -59,8 +70,8 @@ class NewVisitorTest(StaticLiveServerTestCase):
 
         #page updates again and now has 2 entries
         #self.browser.refresh() # added to deal with stale elements
-        self.check_for_row_in_table("1: Buy Bread")
-        self.check_for_row_in_table("2: Buy Milk")
+        self.wait_for_row_in_table("1: Buy Bread")
+        self.wait_for_row_in_table("2: Buy Milk")
 
         #New user2 visits site
         #use new browser session to make sure no cookies from user1
