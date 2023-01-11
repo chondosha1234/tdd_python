@@ -27,7 +27,9 @@ SECRET_KEY = 'django-insecure-d_q6rti0c958mi!12-6%kk@(&ys3c_5#!23+yjg8i^(nhut_5t
 DEBUG = True
 
 ALLOWED_HOSTS = [
+    'localhost',
     'staging.chondosha.com',
+    'live.chondosha.com'
 ]
 
 
