@@ -38,7 +38,7 @@ def _create_or_update_dotenv():
         new_secret = ''.join(random.SystemRandom().choices(
             'abcdefghijklmnopqrstuvwxyz0123456789', k=50
         ))
-    append('.env', f'DJANGO_SECRET_KEY={new_secret}')
+        append('.env', f'DJANGO_SECRET_KEY={new_secret}')
 
 
 def _update_static_files():
