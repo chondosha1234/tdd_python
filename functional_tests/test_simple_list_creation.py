@@ -1,41 +1,15 @@
+from .base import FunctionalTest
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
-from selenium.common.exceptions import WebDriverException
-#from django.test import LiveServerTestCase
-from django.contrib.staticfiles.testing import StaticLiveServerTestCase
+
 from django.urls import reverse
-import unittest
 import time
-import os
+
 
 MAX_WAIT = 10
 
-class NewVisitorTest(StaticLiveServerTestCase):
-
-    def setUp(self):
-        self.browser = webdriver.Firefox()
-        staging_server = os.environ.get('STAGING_SERVER')
-        if staging_server:
-            self.live_server_url = 'http://' + staging_server
-        self.browser.implicitly_wait(3)
-
-    def tearDown(self):
-        self.browser.quit()
-
-    def wait_for_row_in_table(self, row_text):
-        #self.browser.refresh()
-        start_time = time.time()
-        while True:
-            try:
-                table = self.browser.find_element(By.ID, 'id_list_table')
-                rows = table.find_elements(By.TAG_NAME, 'tr')
-                self.assertIn(row_text, [row.text for row in rows])
-                return
-            except(AssertionError, WebDriverException) as e:
-                if time.time() - start_time > MAX_WAIT:
-                    raise e
-                time.sleep(0.5)
+class NewVisitorTest(FunctionalTest):
 
     def test_start_and_save_list(self):
         #User goes to home page
@@ -107,16 +81,3 @@ class NewVisitorTest(StaticLiveServerTestCase):
         # user visits the url and checks the list
 
         self.browser.quit()
-
-    def test_layout_and_styling(self):
-        #user goes to home page
-        self.browser.get(self.live_server_url + reverse('home'))
-        self.browser.set_window_size(1024, 728)
-
-        #the input box is centered
-        inputbox = self.browser.find_element(By.ID, 'id_new_item')
-        self.assertAlmostEqual(
-            inputbox.location['x'] + inputbox.size['width'] / 2,
-            512,
-            delta=5
-        )
