@@ -6,9 +6,6 @@ from selenium.webdriver.common.keys import Keys
 from django.urls import reverse
 import time
 
-
-MAX_WAIT = 10
-
 class NewVisitorTest(FunctionalTest):
 
     def test_start_and_save_list(self):

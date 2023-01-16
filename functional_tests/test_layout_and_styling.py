@@ -4,8 +4,6 @@ from selenium.webdriver.common.keys import Keys
 
 from django.urls import reverse
 
-MAX_WAIT = 10
-
 class LayoutAndStylingTest(FunctionalTest):
 
     def test_layout_and_styling(self):
