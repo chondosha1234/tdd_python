@@ -3,6 +3,7 @@ from django.urls import resolve
 from django.http import HttpRequest
 from django.test.client import Client
 from django.template.loader import render_to_string
+from django.utils.html import escape
 import re
 
 from lists.views import home_page
@@ -33,16 +34,13 @@ class HomePageTest(TestCase):
         response = self.client.get('/')
         self.assertEquals(response.templates[0].name, 'home.html')
         self.assertTemplateUsed(response, 'home.html')
-        #request = HttpRequest()
-        #response = home_page(request)
-        #self.assertEqual(template, 'home.html')
 
 
 class ListViewTest(TestCase):
 
     def test_uses_list_template(self):
         list_ = List.objects.create()
-        response = self.client.get('/lists/%d/' % (list_.id))
+        response = self.client.get(f'/lists/{list_.id}/')
         self.assertTemplateUsed(response, 'list.html')
 
     def test_displays_only_items_for_list(self):
@@ -53,7 +51,7 @@ class ListViewTest(TestCase):
         Item.objects.create(text='other list 1', list=other_list)
         Item.objects.create(text='other list 2', list=other_list)
 
-        response = self.client.get('/lists/%d/' % (correct_list.id))
+        response = self.client.get(f'/lists/{correct_list.id}/')
 
         self.assertContains(response, 'item 1')
         self.assertContains(response, 'item 2')
@@ -64,7 +62,7 @@ class ListViewTest(TestCase):
         other_list = List.objects.create()
         correct_list = List.objects.create()
 
-        response = self.client.get('/lists/%d/' % (correct_list.id))
+        response = self.client.get(f'/lists/{correct_list.id}/')
 
         self.assertEqual(response.context['list'], correct_list)
 
@@ -82,8 +80,16 @@ class NewListTest(TestCase):
 
         self.assertEqual(response.status_code, 302)
         new_list = List.objects.first()
-        self.assertEqual(response['location'], '/lists/%d/' % (new_list.id))
-        self.assertRedirects(response, '/lists/%d/' % (new_list.id))
+        self.assertEqual(response['location'], f'/lists/{new_list.id}/')
+        self.assertRedirects(response, f'/lists/{new_list.id}/')
+
+    def test_validation_errors_are_sent_back_to_home(self):
+        response = self.client.post('/lists/new', data={'item_text': ''})
+
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'home.html')
+        expected_error = escape("You can't have an empty list item")
+        self.assertContains(response, expected_error)
 
 class NewItemTest(TestCase):
 
@@ -92,7 +98,7 @@ class NewItemTest(TestCase):
         correct_list = List.objects.create()
 
         self.client.post(
-            '/lists/%d/add_item' % (correct_list.id),
+            f'/lists/{correct_list.id}/add_item',
             data={'item_text': 'A new item for existing list'}
         )
         self.assertEqual(Item.objects.count(), 1)
@@ -105,8 +111,8 @@ class NewItemTest(TestCase):
         correct_list = List.objects.create()
 
         response = self.client.post(
-            '/lists/%d/add_item' % (correct_list.id),
+            f'/lists/{correct_list.id}/add_item',
             data={'item_text': 'A new item for existing list'}
         )
 
-        self.assertRedirects(response, '/lists/%d/' % (correct_list.id))
+        self.assertRedirects(response, f'/lists/{correct_list.id}/')
