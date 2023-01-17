@@ -17,16 +17,6 @@ class HomePageTest(TestCase):
     def setUp(self):
         self.client = Client()
 
-    """
-    This function strips the auto generated csrf token from rendered html pages
-    in order to compare the html page strings. This was needed in order to follow along
-    with the text book examples.
-    """
-    @staticmethod
-    def remove_csrf(html_code):
-        csrf_regex = r'<input[^>]+csrfmiddlewaretoken[^>]+>'
-        return re.sub(csrf_regex, '', html_code)
-
     def test_root_url_resolve_to_home_page(self):
         found = resolve('/')
         self.assertEquals(found.func, home_page)
@@ -77,7 +67,7 @@ class ListViewTest(TestCase):
 
         self.client.post(
             f'/lists/{correct_list.id}/',
-            data={'item_text': 'A new item for existing list'}
+            data={'text': 'A new item for existing list'}
         )
         self.assertEqual(Item.objects.count(), 1)
         new_item = Item.objects.first()
@@ -90,14 +80,14 @@ class ListViewTest(TestCase):
 
         response = self.client.post(
             f'/lists/{correct_list.id}/',
-            data={'item_text': 'A new item for existing list'}
+            data={'text': 'A new item for existing list'}
         )
 
         self.assertRedirects(response, f'/lists/{correct_list.id}/')
 
     def test_validation_errors_on_list_page(self):
         list_ = List.objects.create()
-        response = self.client.post(f'/lists/{list_.id}/', data={'item_text': ''})
+        response = self.client.post(f'/lists/{list_.id}/', data={'text': ''})
 
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'list.html')
@@ -107,14 +97,14 @@ class ListViewTest(TestCase):
 class NewListTest(TestCase):
 
     def test_save_post_request(self):
-        self.client.post('/lists/new', data={'item_text': 'A new list item'})
+        self.client.post('/lists/new', data={'text': 'A new list item'})
 
         self.assertEqual(Item.objects.count(), 1)
         new_item = Item.objects.first()
         self.assertEqual(new_item.text, 'A new list item')
 
     def test_redirect_after_post(self):
-        response = self.client.post('/lists/new', data={'item_text': 'A new list item'})
+        response = self.client.post('/lists/new', data={'text': 'A new list item'})
 
         self.assertEqual(response.status_code, 302)
         new_list = List.objects.first()
@@ -122,7 +112,7 @@ class NewListTest(TestCase):
         self.assertRedirects(response, f'/lists/{new_list.id}/')
 
     def test_validation_errors_are_sent_back_to_home(self):
-        response = self.client.post('/lists/new', data={'item_text': ''})
+        response = self.client.post('/lists/new', data={'text': ''})
 
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'home.html')
@@ -130,7 +120,7 @@ class NewListTest(TestCase):
         self.assertContains(response, expected_error)
 
     def test_invalid_list_item_arent_saved(self):
-        self.client.post('/lists/new', data={'item_text': ''})
+        self.client.post('/lists/new', data={'text': ''})
 
         self.assertEqual(List.objects.count(), 0)
         self.assertEqual(Item.objects.count(), 0)
