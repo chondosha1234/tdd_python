@@ -14,32 +14,27 @@ def home_page(request):
 
 def view_list(request, list_id):
     list_ = List.objects.get(id=list_id)
+    form = ItemForm()
     error = None
 
     if request.method == 'POST':
-        try:
-            item = Item.objects.create(text=request.POST['text'], list=list_)
-            item.full_clean()
-            item.save()
-            return redirect(list_) # uses get absolute url
-        except ValidationError:
-            item.delete()
-            error = "You can't have an empty list item"
+        form = ItemForm(data=request.POST)
+        if form.is_valid():
+            Item.objects.create(text=request.POST['text'], list=list_)
+            return redirect(list_) # uses get absolute url from model
 
     context = {
         'list': list_,
-        'error': error,
+        'form':form,
+        'error': error
     }
     return render(request, 'list.html', context)
 
 def new_list(request):
-    list_ = List.objects.create()
-    item = Item.objects.create(text=request.POST['text'], list=list_)
-    try:
-        item.full_clean()
-        item.save()
-    except ValidationError:
-        list_.delete()
-        error = "You can't have an empty list item"
-        return render(request, 'home.html', {"error": error})
-    return redirect(list_)  # uses get absolute url method
+    form = ItemForm(data=request.POST)
+    if form.is_valid():
+        list_ = List.objects.create()
+        Item.objects.create(text=request.POST['text'], list=list_)
+        return redirect(list_)
+    else:
+        return render(request, 'home.html', {'form': form}) #form has error message
