@@ -26,7 +26,7 @@ class ItemValidationTest(FunctionalTest):
         # user tries to enter second blank item
         self.browser.find_element(By.ID, 'id_new_item').send_keys(Keys.ENTER)
         # list page produces similar error
-        
+
         self.wait_for(lambda: self.assertEqual(
             self.browser.find_element(By.CSS_SELECTOR, '.has-error').text,
                 "You can't have an empty list item"))
@@ -35,4 +35,4 @@ class ItemValidationTest(FunctionalTest):
         self.browser.find_element(By.ID, 'id_new_item').send_keys('Buy tea')
         self.browser.find_element(By.ID, 'id_new_item').send_keys(Keys.ENTER)
         self.wait_for_row_in_table('1: Buy milk')
-        self.wait_for_row_in_table('1: Buy tea')
+        self.wait_for_row_in_table('2: Buy tea')
