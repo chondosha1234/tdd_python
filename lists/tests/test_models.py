@@ -18,7 +18,7 @@ class ListAndItemModelTest(TestCase):
         second_item = Item()
         second_item.text = "The second item"
         second_item.list = list_
-        second_item.save()\
+        second_item.save()
 
         saved_list = List.objects.first()
         self.assertEqual(list_, saved_list)
