@@ -2,10 +2,14 @@ from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from django.core.exceptions import ValidationError
 from lists.models import Item, List
+from lists.forms import ItemForm 
 
 # Create your views here.
 def home_page(request):
-    context = {}
+    form = ItemForm()
+    context = {
+        'form': form,
+    }
     return render(request, 'home.html', context)
 
 def view_list(request, list_id):
@@ -17,7 +21,7 @@ def view_list(request, list_id):
             item = Item.objects.create(text=request.POST['item_text'], list=list_)
             item.full_clean()
             item.save()
-            return redirect(list_) # uses get absolute url 
+            return redirect(list_) # uses get absolute url
         except ValidationError:
             item.delete()
             error = "You can't have an empty list item"
