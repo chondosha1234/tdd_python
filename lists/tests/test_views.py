@@ -17,9 +17,6 @@ from lists.forms import (
 # Create your tests here.
 class HomePageTest(TestCase):
 
-    def setUp(self):
-        self.client = Client()
-
     def test_root_url_resolve_to_home_page(self):
         found = resolve('/')
         self.assertEquals(found.func, home_page)
