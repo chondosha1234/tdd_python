@@ -5,6 +5,7 @@ from django.test.client import Client
 from django.template.loader import render_to_string
 from django.utils.html import escape
 import re
+from unittest import skip
 
 from lists.views import home_page
 from lists.models import Item, List
@@ -112,6 +113,17 @@ class ListViewTest(TestCase):
 
         self.assertIsInstance(response.context['form'], ItemForm)
         self.assertContains(response, 'name="text"')
+
+    @skip
+    def test_duplicate_validation_error_ends_on_list_page(self):
+        list1 = List.objects.create()
+        item1 = Item.objects.create(list=list1, text='textey')
+        response = self.client.post(f'/lists/{list1.id}/', data={'text': 'textey'})
+
+        expected_error = escape("You've already got this in your list")
+        self.assertContains(response, expected_error)
+        self.assertTemplateUsed(response, 'list.html')
+        self.assertEqual(Item.objects.all().count(), 1)
 
 class NewListTest(TestCase):
 
