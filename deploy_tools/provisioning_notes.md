@@ -64,7 +64,7 @@ Deploy new site or update deployment (automated)
 ## Files needed
 
 * inventory.yaml
-* playbook.yaml 
+* playbook.yaml
 
 ## Commands
 
@@ -83,6 +83,13 @@ Git Release tags
 * echo $TAG
 * git tag $TAG
 * git push origin LIVE $TAG
+
+## update tag
+
+* git tag -f LIVE
+* export TAG=`date +DEPLOYED-%F/%H%M`
+* git tag $TAG
+* git push -f origin LIVE $TAG
 
 ## Show the logs for the deployment
 
