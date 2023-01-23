@@ -29,7 +29,7 @@ if 'DJANGO_DEBUG_FALSE' in os.environ:
     SECRET_KEY = os.environ['DJANGO_SECRET_KEY']
     ALLOWED_HOSTS = [os.environ['SITENAME']]
 else:
-    DEBUG = True 
+    DEBUG = True
     SECRET_KEY = 'django-insecure-d_q6rti0c958mi!12-6%kk@(&ys3c_5#!23+yjg8i^(nhut_5t'
     ALLOWED_HOSTS = []
 
@@ -131,3 +131,22 @@ STATIC_ROOT = os.path.abspath(os.path.join(BASE_DIR, './staticfiles/'))
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# Logging
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'handlers': {
+        'console': {
+            'level': 'DEBUG',
+            'class': 'logging.StreamHandler',
+        },
+    },
+    'loggers': {
+        'django': {
+            'handlers': ['console'],
+        },
+    },
+    'root': {'level': 'INFO'},
+}
