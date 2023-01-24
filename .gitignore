@@ -4,3 +4,4 @@ __pycache__
 geckodriver.log
 .env
 *.log
+superlist-env

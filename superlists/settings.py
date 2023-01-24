@@ -138,6 +138,13 @@ STATIC_ROOT = os.path.abspath(os.path.join(BASE_DIR, './staticfiles/'))
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
+# Email configuration settings
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_HOST_USER = 'chondoshatest@gmail.com'
+EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_PASSWORD')
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+
 # Logging
 
 LOGGING = {
