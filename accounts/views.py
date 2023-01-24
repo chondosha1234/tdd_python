@@ -1,19 +1,18 @@
 from django.shortcuts import render, redirect
 from django.core.mail import send_mail
+from django.urls import reverse
+from django.contrib import auth, messages
 from django.contrib.auth import authenticate
-from django.contrib.auth import login as auth_login, logout as auth_logout
 import uuid
-import sys
 
 from accounts.models import Token
 # Create your views here.
 
 def login(request):
-    print('login view', file=sys.stderr)
-    uid = request.GET.get('uid')
-    user = authenticate(request, uid=uid)
-    if user is not None:
-        auth_login(request, user)
+    uid = request.GET.get('token')
+    user = auth.authenticate(request, uid=uid)
+    if user:
+        auth.login(request, user)
     return redirect('/')
 
 def logout(request):
@@ -22,14 +21,18 @@ def logout(request):
 
 def send_login_email(request):
     email = request.POST['email']
-    #uid = str(uuid.uuid4())
-    #Token.objects.create(email=email, uid=uid)
+    token = Token.objects.create(email=email)
     #print('saving uid', uid, 'for email', email, file=sys.stderr)
-    #url = request.build_absolute_uri(f'/accounts/login?uid={uid}')
+    url = request.build_absolute_uri(reverse('login') + '?token=' + str(token.uid))
+    message_body = f'Use this link to log in:\n\n{url}'
     send_mail(
         'Your login link for Superlists',
-        'body text tbc',
+        message_body,
         'noreply@superlists',
         [email],)
+    messages.success(
+        request,
+        "Check your email, we've sent you a link you can use to log in."
+    )
     #return render(request, 'login_email_sent.html')
     return redirect('/')
