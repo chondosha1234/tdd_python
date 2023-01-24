@@ -3,6 +3,7 @@ from django.core.mail import send_mail
 from django.urls import reverse
 from django.contrib import auth, messages
 from django.contrib.auth import authenticate
+from django.contrib.auth import logout as auth_logout
 import uuid
 
 from accounts.models import Token
