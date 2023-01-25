@@ -1,5 +1,5 @@
 - name: deploy site
-  
+
   hosts: virtualmachines
 
   vars:
@@ -12,7 +12,7 @@
       shell: mkdir -p {{ project_dir|quote }}
 
     - name: clone git if needed
-      git:  
+      git:
         repo: '{{ git_repo }}'
         dest: '{{ project_dir }}'
         force: yes
@@ -27,10 +27,10 @@
       args:
         chdir: '{{ project_dir }}'
       when: venv_register.stat.exists == False
-  
+
     - name: update virtualenv
       shell: ./virtualenv/bin/pip install -r requirements.txt
-      args: 
+      args:
         chdir: '{{ project_dir }}'
 
     - name: create dotenv
@@ -58,7 +58,7 @@
         regexp: '^DJANGO_SECRET_KEY'
       check_mode: true
       changed_when: false
-      register: key_register 
+      register: key_register
 
     - name: make random key
       set_fact:
@@ -77,7 +77,12 @@
       args:
         chdir: '{{ project_dir }}'
 
-    - name: update database
+    - name: makemigrations database
+      shell: ./virtualenv/bin/python manage.py makemigrations
+      args:
+        chdir: '{{ project_dir }}'
+
+    - name: migrate database
       shell: ./virtualenv/bin/python manage.py migrate --noinput
       args:
         chdir: '{{ project_dir }}'
