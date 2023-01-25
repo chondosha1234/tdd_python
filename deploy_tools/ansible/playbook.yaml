@@ -72,6 +72,12 @@
         line: 'DJANGO_SECRET_KEY={{random_key}}'
       when: key_register == 0
 
+    - name: add email password to dotenv
+      lineinfile:
+        path: '{{ project_dir }}/.env'
+        regexp: '^EMAIL_PASSWORD'
+        line: 'EMAIL_PASSWORD=vpdqfkoygklezkab'
+
     - name: update static files
       shell: ./virtualenv/bin/python manage.py collectstatic --noinput
       args:
