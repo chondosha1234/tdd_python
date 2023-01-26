@@ -48,9 +48,7 @@ class ItemValidationTest(FunctionalTest):
     def test_cannot_add_duplicate_items(self):
         # user starts new list
         self.browser.get(self.live_server_url)
-        self.get_item_input_box().send_keys('Buy chips')
-        self.get_item_input_box().send_keys(Keys.ENTER)
-        self.wait_for_row_in_table('1: Buy chips')
+        self.add_list_item('Buy chips')
 
         # tries to enter duplicate item
         self.get_item_input_box().send_keys('Buy chips')
@@ -65,9 +63,7 @@ class ItemValidationTest(FunctionalTest):
     def test_error_messages_clear_on_input(self):
         # user starts list and causes validation error
         self.browser.get(self.live_server_url)
-        self.get_item_input_box().send_keys('Buy cake')
-        self.get_item_input_box().send_keys(Keys.ENTER)
-        self.wait_for_row_in_table('1: Buy cake')
+        self.add_list_item('Buy cake')
         self.get_item_input_box().send_keys('Buy cake')
         self.get_item_input_box().send_keys(Keys.ENTER)
 
