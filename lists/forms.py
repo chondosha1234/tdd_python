@@ -26,7 +26,16 @@ class ItemForm(forms.models.ModelForm):
         self.instance.list = for_list
         # .instance represents object being modified or created
         return super().save()
-    
+
+
+class NewListForm(ItemForm):
+
+    def save(self, owner):
+        if owner.is_authenticated:
+            return List.create_new(first_item_text=self.cleaned_data['text'], owner=owner)
+        else:
+            return List.create_new(first_item_text=self.cleaned_data['text'])
+
 
 class ExistingListItemForm(ItemForm):
 

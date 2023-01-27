@@ -3,7 +3,7 @@ from django.http import HttpResponse
 from django.core.exceptions import ValidationError
 from django.contrib.auth import get_user_model
 from lists.models import Item, List
-from lists.forms import ItemForm, ExistingListItemForm
+from lists.forms import ItemForm, ExistingListItemForm, NewListForm
 
 User = get_user_model()
 
@@ -35,13 +35,21 @@ def new_list(request):
     form = ItemForm(data=request.POST)
     if form.is_valid():
         list_ = List()
-        list_.owner = request.user
+        if request.user.is_authenticated:
+            list_.owner = request.user
         list_.save()
         form.save(for_list=list_)
-        return redirect(list_)
+        #return redirect(list_)
+        return redirect(str(list_.get_absolute_url())) #needed for mock testing
     else:
         return render(request, 'home.html', {'form': form}) #form has error message
 
+def new_list2(request):
+    form = NewListForm(data=request.POST)
+    if form.is_valid():
+        list_ = form.save(owner=request.user)
+        return redirect(str(list_.get_absolute_url()))
+    return render(request, 'home.html', {'form': form})
 
 def my_lists(request, email):
     owner = User.objects.get(email=email)
