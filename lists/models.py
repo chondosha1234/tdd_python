@@ -4,12 +4,20 @@ from django.conf import settings
 
 # Create your models here.
 class List(models.Model):
+<<<<<<< HEAD
     owner = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
         blank=True,
         null=True
     )
+=======
+    owner = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete = models.CASCADE, blank=True, null=True)
+
+    @property 
+    def name(self):
+        return self.item_set.first().text
+>>>>>>> b62afb5ab45d6c72630b9fac52b266bbf8db3e39
 
     def get_absolute_url(self):
         return reverse('view_list', args=[self.id])
