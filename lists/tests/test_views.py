@@ -10,7 +10,7 @@ from unittest import skip
 from unittest.mock import patch, Mock
 import unittest
 
-from lists.views import home_page, new_list2
+from lists.views import home_page, new_list
 from lists.models import Item, List
 from lists.forms import (
     ItemForm, ExistingListItemForm,
@@ -187,7 +187,7 @@ class NewListViewUnitTest(unittest.TestCase):
         returned_object = mock_form.save.return_value
         returned_object.get_absoulte_url.return_value = 'fakeurl'
 
-        new_list2(self.request)
+        new_list(self.request)
         mockNewListForm.assert_called_once_with(data=self.request.POST)
 
     def test_saves_form_with_owner_if_form_valid(self, mockNewListForm):
@@ -196,7 +196,7 @@ class NewListViewUnitTest(unittest.TestCase):
         returned_object = mock_form.save.return_value
         returned_object.get_absoulte_url.return_value = 'fakeurl'
 
-        new_list2(self.request)
+        new_list(self.request)
         mock_form.save.assert_called_once_with(owner=self.request.user)
 
     @patch('lists.views.redirect')
@@ -206,7 +206,7 @@ class NewListViewUnitTest(unittest.TestCase):
         mock_form = mockNewListForm.return_value
         mock_form.is_valid.return_value = True
 
-        response = new_list2(self.request)
+        response = new_list(self.request)
 
         self.assertEqual(response, mock_redirect.return_value)
         mock_redirect.assert_called_once_with(str(mock_form.save.return_value.get_absolute_url()))
@@ -218,7 +218,7 @@ class NewListViewUnitTest(unittest.TestCase):
         mock_form = mockNewListForm.return_value
         mock_form.is_valid.return_value = False
 
-        response = new_list2(self.request)
+        response = new_list(self.request)
 
         self.assertEqual(response, mock_render.return_value)
         mock_render.assert_called_once_with(self.request, 'home.html', {'form': mock_form})
@@ -227,7 +227,7 @@ class NewListViewUnitTest(unittest.TestCase):
         mock_form = mockNewListForm.return_value
         mock_form.is_valid.return_value = False
 
-        new_list2(self.request)
+        new_list(self.request)
         self.assertFalse(mock_form.save.called)
 
 class MyListsTest(TestCase):
