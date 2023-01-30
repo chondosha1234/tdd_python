@@ -62,5 +62,5 @@ class MyListsTest(FunctionalTest):
         # user logs out. "My lists" option disappears
         self.browser.find_element(By.LINK_TEXT, 'Log out').click()
         self.wait_for(lambda: self.assertEqual(
-            self.browser.find_element(By.LINK_TEXT('My lists'), [])
+            self.browser.find_elements(By.LINK_TEXT, 'My lists'), []
         ))
