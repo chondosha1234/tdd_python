@@ -1,4 +1,6 @@
-version: 2
+version: '2.1'
+orbs:
+  browser-tools: circleci/browser-tools@x.y
 jobs:
   build:
     docker:
@@ -9,6 +11,8 @@ jobs:
     steps:
       # obtain code from github
       - checkout
+      # install browser tools for firefox
+      - browser-tools/install-browser-tools
       # create virtualenv and install dependencies
       - run:
           name: install dependencies
@@ -16,8 +20,6 @@ jobs:
             python3 -m venv virtualenv
             . virtualenv/bin/activate
             pip install -r requirements.txt
-            sudo apt update
-            sudo apt install firefox
       - run:
           name: run tests
           command: |
