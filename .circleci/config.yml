@@ -16,7 +16,7 @@ jobs:
             python3 -m venv virtualenv
             . virtualenv/bin/activate
             pip install -r requirements.txt
-            apt install firefox
+            sudo apt install firefox
       - run:
           name: run tests
           command: |
