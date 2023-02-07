@@ -25,4 +25,4 @@ jobs:
           command: |
             . virtualenv/bin/activate
             python3 manage.py test accounts lists
-          #  python3 manage.py test functional_tests
+            python3 manage.py test functional_tests
