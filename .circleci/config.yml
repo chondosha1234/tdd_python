@@ -12,7 +12,7 @@ jobs:
       # obtain code from github
       - checkout
       # install browser tools for firefox
-      - browser-tools/install-browser-tools
+      - browser-tools/install-firefox
       # create virtualenv and install dependencies
       - run:
           name: install dependencies
