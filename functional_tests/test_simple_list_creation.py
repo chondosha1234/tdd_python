@@ -2,6 +2,7 @@ from .base import FunctionalTest
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
+from selenium.webdriver import FirefoxOptions
 from django.urls import reverse
 import time
 
@@ -9,7 +10,7 @@ class NewVisitorTest(FunctionalTest):
 
     def test_start_and_save_list(self):
         #User goes to home page
-        self.browser.get(self.live_server_url + reverse('home'))
+        self.browser.get(self.live_server_url)
 
         #page title mentions 'To Do' list
         self.assertIn('To-Do', self.browser.title)
@@ -46,7 +47,9 @@ class NewVisitorTest(FunctionalTest):
         #New user2 visits site
         #use new browser session to make sure no cookies from user1
         self.browser.quit()
-        self.browser = webdriver.Firefox()
+        opts = FirefoxOptions()
+        opts.add_argument("--headless")
+        self.browser = webdriver.Firefox(options=opts)
 
         #user2 visists home page
         # user1 list is not there
@@ -75,5 +78,3 @@ class NewVisitorTest(FunctionalTest):
         #page generates unique url for user with explanatory text
 
         # user visits the url and checks the list
-
-        self.browser.quit()
