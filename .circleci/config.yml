@@ -54,7 +54,7 @@ jobs:
           command: |
             npm i node-qunit-puppeteer
             npm list
-            echo /home/circleci/.cache/puppeteer
+            cat /home/circleci/.cache/puppeteer
       - run:
           name: Javascript tests
           command: |
