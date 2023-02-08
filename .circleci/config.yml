@@ -14,6 +14,9 @@ jobs:
       - checkout
       # install browser tools for firefox
       - browser-tools/install-firefox
+      # install node
+      - node/install:
+          node-version: '18.12.1' 
       # create virtualenv and install dependencies
       - run:
           name: install dependencies
