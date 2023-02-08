@@ -6,7 +6,6 @@ jobs:
   build:
     docker:
       - image: circleci/python:3.7
-      - image: circleci/node:19.6.0
 
     working_directory: ~/tdd_python
 
@@ -18,8 +17,8 @@ jobs:
       - browser-tools/install-chrome
       - browser-tools/install-chromedriver
       # install node
-      #- node/install:
-      #    node-version: '18.12.1'
+      - node/install:
+          node-version: '18.12.1'
       # create virtualenv and install dependencies
       - run:
           name: install dependencies
