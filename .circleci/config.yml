@@ -14,8 +14,8 @@ jobs:
       - checkout
       # install browser tools for firefox and chrome
       - browser-tools/install-firefox
-      - browser-tools/install-chrome
-      - browser-tools/install-chromedriver
+      #- browser-tools/install-chrome
+      #- browser-tools/install-chromedriver
       # install node
       - node/install:
           node-version: '18.12.1'
@@ -27,7 +27,6 @@ jobs:
             . virtualenv/bin/activate
             pip install -r requirements.txt
             pip install -r test-requirements.txt
-            npm install puppeteer
             npm install node-qunit-puppeteer
       - run:
           name: run tests
@@ -35,4 +34,5 @@ jobs:
             . virtualenv/bin/activate
             python3 manage.py test accounts lists
             python3 manage.py test functional_tests
+            npm install chromium
             node_modules/node-qunit-puppeteer/cli.js lists/static/tests/tests.html
