@@ -21,6 +21,7 @@ jobs:
             . virtualenv/bin/activate
             pip install -r requirements.txt
             pip install -r test-requirements.txt
+            npm install node-qunit-puppeteer
       - run:
           name: run tests
           command: |
