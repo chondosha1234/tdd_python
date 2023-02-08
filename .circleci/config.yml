@@ -39,7 +39,7 @@ jobs:
 
   build2:
     docker:
-      - image: circleci/node:18.12.1
+      - image: cimg/node:19.6.0
 
     working_directory: ~/tdd_python
 
