@@ -27,3 +27,4 @@ jobs:
             . virtualenv/bin/activate
             python3 manage.py test accounts lists
             python3 manage.py test functional_tests
+            node_modules/node-qunit-puppeteer/cli.js lists/static/tests/tests.html

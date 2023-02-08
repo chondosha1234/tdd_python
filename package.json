@@ -1,0 +1,5 @@
+{
+  "dependencies": {
+    "node-qunit-puppeteer": "^2.1.2"
+  }
+}
