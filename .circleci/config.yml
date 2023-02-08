@@ -37,7 +37,7 @@ jobs:
           #  npm install node-qunit-puppeteer
           #  node_modules/node-qunit-puppeteer/cli.js lists/static/tests/tests.html
 
-  js_tests:
+  js_tests: 
     docker:
       - image: circleci/node:18
 
