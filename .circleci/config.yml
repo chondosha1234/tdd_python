@@ -27,7 +27,7 @@ jobs:
             . virtualenv/bin/activate
             pip install -r requirements.txt
             pip install -r test-requirements.txt
-            npm install chromium
+            npm install puppeteer
             npm install node-qunit-puppeteer
       - run:
           name: run tests
@@ -35,4 +35,4 @@ jobs:
             . virtualenv/bin/activate
             python3 manage.py test accounts lists
             python3 manage.py test functional_tests
-            node_modules/node-qunit-puppeteer/cli.js lists/static/tests/tests.html "--allow-file-access-from-files"
+            node_modules/node-qunit-puppeteer/cli.js lists/static/tests/tests.html
