@@ -45,10 +45,10 @@ jobs:
 
     steps:
       - checkout
-      - run:
-          name: Install Headless Chrome dependencies
-          command: |
-            sudo apt-get install libXtst6
+      #- run:
+      #    name: Install Headless Chrome dependencies
+      #    command: |
+      #      sudo apt-get install libXtst6
       - run:
           name: Install puppeteer with chronium
           command: |
